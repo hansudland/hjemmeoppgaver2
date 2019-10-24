@@ -1,0 +1,48 @@
+---
+title: "Homework lecture 2"
+author: "Hans Udland"
+date: "24 10 2019"
+output: 
+ html_document:
+   theme: cerulean
+   number_sections: true
+   toc: true
+   toc_float: true
+---
+
+Installerer pakker hvis ikke allerede installert.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, include = FALSE, warning = FALSE, message = FALSE)
+
+packages <- c("tidyverse", "devtools", "lubridate", "purrr", "readxl")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())))  
+}
+
+devtools::install_github("rstudio/renv")
+
+```
+
+2 Enkle funksjoner
+
+```{r data, echo = TRUE, include = TRUE}
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
