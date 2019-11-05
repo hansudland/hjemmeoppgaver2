@@ -15,34 +15,210 @@ Installerer pakker hvis ikke allerede installert.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, include = FALSE, warning = FALSE, message = FALSE)
 
-packages <- c("tidyverse", "devtools", "lubridate", "purrr", "readxl")
+packages <- c("tidyverse", "dplyr", "devtools", "lubridate", "purrr", "asserttat", "checkmate", "ggplot")
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())))  
 }
 
-devtools::install_github("rstudio/renv")
+#devtools::install_github("rstudio/renv")
 
 ```
 
-2 Enkle funksjoner
+2 Enkle funksjoner (Eksempel)
 
 ```{r data, echo = TRUE, include = TRUE}
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+reduce_three <- function(x) {
+  x - 3
+}
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+x <- c(10, 20, 30)
 
-```{r}
+reduce_three(x)
 
 ```
 
-## Including Plots
+2.1 Summer to tall
 
-You can also embed plots, for example:
+```{r data, echo = TRUE, include = TRUE}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+sum_twofigures <- function(x, y) {
+  x + y
+}
+
+x <- c(1, 2, 3, 10)
+y <- c(4, 5, 6, 23)
+
+sum_twofigures(x, y)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+2.2 Multipliser to tall
+
+```{r data, echo = TRUE, include = TRUE}
+
+multiply_twofigures <- function(x, y) {
+  x * y
+}
+
+x <- c(1, 2, 3, 10)
+y <- c(4, 5, 6, 23)
+
+multiply_twofigures(x, y)
+
+```
+
+2.3 Feilmelding
+
+```{r data, echo = TRUE, include = TRUE}
+
+kvadrer_x <- function(x) {
+  x^2
+}
+
+kvadrer_x()
+
+```
+
+Er ikke definert noen defaultverdi. Synes rimelig verdi her er "NA"
+
+```{r data, echo = TRUE, include = TRUE}
+
+kvadrer_x <- function(x=NA) {
+  x^2
+}
+
+kvadrer_x()
+
+```
+
+2.4 Default value
+```{} 
+c() angir at gyldige verdi for method er "pearson", "kendall" eller "spearman". Det er "pearson" som er default, og det er denne som blir metoden som blir brukt hvis ikke noe angis spesifikt.
+
+```
+
+2.5 Finnes 2 i vektoren?
+
+```{r data, echo = TRUE, include = TRUE}
+
+find_two <- function(x = 0) {
+  '2' %in% x
+}
+
+x <- c(1, 2, 3, 10)
+y <- c(4, 5, 6, 23)
+
+find_two(x)
+find_two(y)
+
+```
+
+2.6 Dårlig idé
+
+```{} 
+Fordi dette er standardfunksjoner som allerede ligger innebygd i R.
+
+```
+
+2.7 Partall
+
+```{r data, echo = TRUE, include = TRUE}
+
+er_partall <- function(x=NA) {
+  
+  if (is.na(x) == TRUE) {
+  stop("Tall mangler", call. = FALSE)
+  }
+  
+  else if (x != floor(x)) {
+  stop("Tall er ikke et heltall", call. = FALSE)
+  }
+
+  else if (x %% 2 == 0) {
+    TRUE
+  } 
+  else { 
+    FALSE 
+  }
+}
+
+er_partall(0)
+er_partall(1)
+er_partall(2)
+er_partall(2.5)
+
+# Man trenger ikke lage er_oddetall fordi alle heltall enten er partall eller oddetall. Man får FALSE hvis det er et oddetall. 
+
+```
+
+2.8 IF ELSE IFELSE
+
+```{r data, echo = TRUE, include = TRUE}
+
+# ifelse() må ikke sammenblandes med if().. else. if().. else regulerer hvilken del av koden som skal kjøres, mens ifelse() tester en vektor hvor feks en logisk test (true, false) er i det første elementet, verdien som returneres hvis logisk test gir TRUE i det andre elementet og FALSE i det tredje elementet. feks:   
+
+er_partall2 <- function(x=NA) {
+  ifelse(x %% 2 == 0, TRUE, FALSE)
+}
+
+x <- c(0, 1, 2)
+
+er_partall2(x)
+
+```
+
+2.9 Funksjonen virker ikke
+
+
+```{r data, echo = TRUE, include = TRUE}
+
+# Den opprinnelige feilen skyldes at den tror at verdien til "variabel" er et objekt og ikke navn på kolonnen. Man må bruke {{}} rundt variabel for å tvinge frem riktig behandling av R.
+
+lag_histogram0 <- function(data, variabel) {
+    data %>%
+      ggplot(aes(x = {{variabel}})) + 
+      geom_histogram()
+
+}
+
+lag_histogram0(mtcars, cyl)
+
+```
+
+3 God
+
+```{r data, echo = TRUE, include = TRUE}
+
+give_greet <- function(x = lubridate::now()) {
+    hour <-  lubridate::hour(x) # Kunne tatt timer rett i funksjonen også
+    if (hour > 5 & hour < 9) {
+    return('God morgen')
+    }
+    
+    else if (hour >= 9 & hour < 12) {
+    return('God formiddag')
+    }
+    
+    else if (hour >= 12 & hour < 18) {
+    return('God ettermiddag')
+    }
+    
+    else {
+    return('God kveld')
+    }
+}
+
+give_greet('2019-10-25 08:00:00 CEST')
+give_greet('2019-10-25 09:00:00 CEST')
+give_greet('2019-10-25 12:00:00 CEST')
+give_greet('2019-10-25 18:00:00 CEST')
+
+```
+
+```{r data, echo = TRUE, include = TRUE}
+
+dingdong <- function(x)
+
+```
+
