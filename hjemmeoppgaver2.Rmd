@@ -218,7 +218,9 @@ give_greet('2019-10-25 18:00:00 CEST')
 
 ```{r data, echo = TRUE, include = TRUE}
 
-dingdong <- function(x)
+#dingdong <- function(x)
 
 ```
+
+...
 
